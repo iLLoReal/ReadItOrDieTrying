@@ -3,12 +3,12 @@ import {useEffect, useState} from "react";
 export const Reader = (
   {text, timeBetweenReads, delimiters=['.', ';', '!'], manualPlay=false}: { text: string, timeBetweenReads: number, delimiters?: string[], manualPlay: boolean}
 ) => {
-  const [splittedText, setSplittedText] = useState(parseFromDelimiters(delimiters))
+  const [splittedText, setSplittedText] = useState<string[]>(splitFromDelimiters(delimiters))
   const [indexTextToDisplay, setIndexTextToDisplay] = useState(0);
 
   useEffect(() => {
     setIndexTextToDisplay(0);
-    setSplittedText(parseFromDelimiters(delimiters))
+    setSplittedText(splitFromDelimiters(delimiters))
   }, [manualPlay]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const Reader = (
     </div>
   )
 
-  function parseFromDelimiters(delimiters: string[]) {
+  function splitFromDelimiters(delimiters: string[]) {
     return () => {
       let parts: string[] = [text];
 
@@ -38,8 +38,10 @@ export const Reader = (
         });
         parts = tempParts;
       });
+      parts = parts.filter(part => part.trim() !== '');
+      parts.push(''); // pour effacer le mot a la fin
 
-      return parts.filter(part => part.trim() !== '');
+      return parts;
     };
   }
 }
