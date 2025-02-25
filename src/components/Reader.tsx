@@ -1,35 +1,45 @@
 import {useEffect, useState} from "react";
 
-function findNextPortion(textToDisplay: string) {
-  return textToDisplay.indexOf('.');
-}
-
 export const Reader = (
-  {text, timeBetweenReads}: { text: string, timeBetweenReads: number }
+  {text, timeBetweenReads, delimiters=['.', ';', '!'], manualPlay=false}: { text: string, timeBetweenReads: number, delimiters?: string[], manualPlay: boolean}
 ) => {
-  const [textToDisplay, setTextToDisplay] = useState('');
-  const [shouldSlice, setShouldSlice] = useState(false);
-  const [nextPortion, setNextPortion] = useState(0);
+  const [splittedText, setSplittedText] = useState(parseFromDelimiters(delimiters))
+  const [indexTextToDisplay, setIndexTextToDisplay] = useState(0);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShouldSlice(true), timeBetweenReads); // Flash for 500ms
-    return () => clearTimeout(timer);
-  }, [text])
+    setIndexTextToDisplay(0);
+    setSplittedText(parseFromDelimiters(delimiters))
+  }, [manualPlay]);
 
   useEffect(() => {
-    setTextToDisplay(text.slice(0, nextPortion))
-    setShouldSlice(false);
-  }, [nextPortion]);
+    if (indexTextToDisplay < splittedText.length) {
+      console.log('ici', text, indexTextToDisplay, splittedText);
+      const timer = setTimeout(() => {
+        setIndexTextToDisplay(indexTextToDisplay + 1);
+      }, timeBetweenReads);
 
-  useEffect(() => {
-    if (shouldSlice) {
-      setNextPortion(findNextPortion(textToDisplay))
-    }
-  }, [shouldSlice, textToDisplay]);
+      return () => clearTimeout(timer);    }
+  }, [indexTextToDisplay]);
 
   return (
-    <div>
-      {textToDisplay}
+    <div style={{display: 'flex', flexDirection: 'row' }}>
+      {splittedText[indexTextToDisplay]}
     </div>
   )
+
+  function parseFromDelimiters(delimiters: string[]) {
+    return () => {
+      let parts: string[] = [text];
+
+      delimiters.forEach(delimiter => {
+        const tempParts: string[] = [];
+        parts.forEach(part => {
+          tempParts.push(...part.split(delimiter));
+        });
+        parts = tempParts;
+      });
+
+      return parts.filter(part => part.trim() !== '');
+    };
+  }
 }

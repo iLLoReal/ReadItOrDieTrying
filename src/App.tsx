@@ -1,11 +1,36 @@
 import {Header} from "./components/header";
 import {Reader} from "./components/Reader";
+import {useState} from "react";
 
 export const App = () => {
+  const [currentText, setCurrentText] = useState('');
+  const [shouldPlay, setShouldPlay] = useState(false);
+
     return (
-      <div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-around'
+      }}>
       <Header />
-      <Reader text={'Bonjour. Je suis une phrase. Et une autre. Et encore une autre'} timeBetweenReads={900} />
+        <div>
+          <textarea onBlur={(e) => setCurrentText(() => e.target.value)}>
+
+          </textarea>
+
+          <button
+            type={'button'}
+            onClick={() => setShouldPlay(!shouldPlay)}
+          >
+            Play !
+          </button>
+
+        </div>
+        <Reader
+          text={currentText}
+          timeBetweenReads={1900}
+          manualPlay={shouldPlay}
+        />
+
       </div>
     )
 }
