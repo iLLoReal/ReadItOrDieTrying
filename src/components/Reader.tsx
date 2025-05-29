@@ -24,8 +24,12 @@ export const Reader = (
   }, [indexTextToDisplay]);
 
   return (
-    <div style={{display: 'flex', flexDirection: 'row' }}>
+    <div style={{display: 'flex', flexDirection: 'column' }}>
+      "
+      <div style={{marginLeft: 100}}>
       {splittedText[indexTextToDisplay]}
+      </div>
+      "
     </div>
   )
 
