@@ -27,7 +27,7 @@ export const App = () => {
         </div>
         <Reader
           text={currentText}
-          timeBetweenReads={1900}
+          timeBetweenReads={70}
           manualPlay={shouldPlay}
         />
 

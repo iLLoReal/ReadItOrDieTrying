@@ -3,20 +3,22 @@ import {useEffect, useState} from "react";
 export const Reader = (
   {text, timeBetweenReads, delimiters=['.', ';', '!'], manualPlay=false}: { text: string, timeBetweenReads: number, delimiters?: string[], manualPlay: boolean}
 ) => {
-  const [splittedText, setSplittedText] = useState<string[]>(splitFromDelimiters(delimiters))
+  const [splittedText, setSplittedText] = useState<string[]>(splitFromDelimiters(delimiters)())
   const [indexTextToDisplay, setIndexTextToDisplay] = useState(0);
 
   useEffect(() => {
     setIndexTextToDisplay(0);
-    setSplittedText(splitFromDelimiters(delimiters))
+    setSplittedText(splitFromDelimiters(delimiters)())
   }, [manualPlay]);
 
   useEffect(() => {
+
     if (indexTextToDisplay < splittedText.length) {
       console.log('ici', text, indexTextToDisplay, splittedText);
+
       const timer = setTimeout(() => {
         setIndexTextToDisplay(indexTextToDisplay + 1);
-      }, timeBetweenReads);
+      }, (splittedText[indexTextToDisplay]?.length / timeBetweenReads) * 1000);
 
       return () => clearTimeout(timer);    }
   }, [indexTextToDisplay]);
